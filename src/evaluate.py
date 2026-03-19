@@ -18,6 +18,18 @@ except ImportError:
     _HAS_MEDPY = False
     print('WARNING: medpy not installed — HD95 will be skipped.')
 
+from scipy.ndimage import label as cc_label
+
+
+def remove_small_components(pred_bin: np.ndarray, min_size: int = 50) -> np.ndarray:
+    """Remove connected components smaller than min_size voxels."""
+    pred_bin = pred_bin.copy()
+    labeled, n = cc_label(pred_bin)
+    for i in range(1, n + 1):
+        if (labeled == i).sum() < min_size:
+            pred_bin[labeled == i] = 0
+    return pred_bin
+
 
 # ---------------------------------------------------------------------------
 # Metric helpers
@@ -82,6 +94,8 @@ def evaluate_fold(data_dir, fold_idx, splits, device, args):
 
             for region in ('ET', 'TC', 'WT'):
                 pm = pred_map[region].astype(bool)
+                if region == 'ET':
+                    pm = remove_small_components(pm, min_size=50)
                 gm = gt_map[region].astype(bool)
                 bucket[region]['dice'].append(compute_dice(pm, gm))
                 bucket[region]['hd95'].append(compute_hd95(pm, gm))

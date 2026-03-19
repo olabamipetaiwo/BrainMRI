@@ -5,6 +5,7 @@ import json
 import numpy as np
 import torch
 import torch.nn as nn
+from torch.cuda.amp import GradScaler, autocast
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -99,10 +100,13 @@ def train_fold(data_dir, fold_idx, splits, device, args):
     )
 
     dice_loss_fn = build_loss_fn()
-    ce_loss_fn   = nn.CrossEntropyLoss()
+    # ET (class 3) upweighted to improve enhancing tumor segmentation
+    class_weights = torch.tensor([0.5, 1.0, 1.0, 3.0], device=device)
+    ce_loss_fn   = nn.CrossEntropyLoss(weight=class_weights)
 
-    best_dice    = -1.0
-    ckpt_path    = os.path.join(fold_dir, 'best_model.pth')
+    scaler    = GradScaler()
+    best_dice = -1.0
+    ckpt_path = os.path.join(fold_dir, 'best_model.pth')
 
     for epoch in range(1, args.epochs + 1):
         # ---- train ----
@@ -113,15 +117,17 @@ def train_fold(data_dir, fold_idx, splits, device, args):
             labels = labels.to(device)
 
             optimizer.zero_grad()
-            logits = model(images)
+            with autocast():
+                logits = model(images)
+                dloss  = dice_loss_fn(logits, labels.unsqueeze(1))
+                celoss = ce_loss_fn(logits, labels)
+                loss   = 0.5 * dloss + 0.5 * celoss
 
-            dloss  = dice_loss_fn(logits, labels.unsqueeze(1))
-            celoss = ce_loss_fn(logits, labels)
-            loss   = 0.5 * dloss + 0.5 * celoss
-
-            loss.backward()
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
             train_losses.append(loss.item())
 
         # ---- validate ----
