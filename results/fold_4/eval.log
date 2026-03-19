@@ -11,3 +11,29 @@ Fold 4 — 96 val subjects
 2026-03-19 16:34:03 [INFO]     TC    0.7493      5.90
 2026-03-19 16:34:03 [INFO]     WT    0.8706      4.45
 2026-03-19 16:34:03 [INFO] Metrics saved → results/fold_4/metrics.json
+2026-03-19 17:30:22 [INFO] Loaded fold 4 checkpoint (epoch 10)
+2026-03-19 17:31:16 [INFO] Loaded fold 4 checkpoint (epoch 10)
+2026-03-19 17:31:55 [INFO]   20/96 subjects done
+2026-03-19 17:32:43 [INFO]   20/96 subjects done
+2026-03-19 17:33:24 [INFO]   40/96 subjects done
+2026-03-19 17:34:06 [INFO]   40/96 subjects done
+2026-03-19 17:34:53 [INFO]   60/96 subjects done
+2026-03-19 17:35:29 [INFO]   60/96 subjects done
+2026-03-19 17:36:22 [INFO]   80/96 subjects done
+2026-03-19 17:36:52 [INFO]   80/96 subjects done
+2026-03-19 17:37:33 [INFO] 
+Fold 4 — 96 val subjects
+2026-03-19 17:37:33 [INFO] Region      Dice      HD95
+2026-03-19 17:37:33 [INFO] --------------------------
+2026-03-19 17:37:33 [INFO]     ET    0.6804      5.65
+2026-03-19 17:37:33 [INFO]     TC    0.7493      5.90
+2026-03-19 17:37:33 [INFO]     WT    0.8706      4.45
+2026-03-19 17:37:33 [INFO] Metrics saved → results/fold_4/metrics.json
+2026-03-19 17:37:58 [INFO] 
+Fold 4 — 96 val subjects
+2026-03-19 17:37:58 [INFO] Region      Dice      HD95
+2026-03-19 17:37:58 [INFO] --------------------------
+2026-03-19 17:37:58 [INFO]     ET    0.6804      5.65
+2026-03-19 17:37:58 [INFO]     TC    0.7493      5.90
+2026-03-19 17:37:58 [INFO]     WT    0.8706      4.45
+2026-03-19 17:37:58 [INFO] Metrics saved → results/fold_4/metrics.json
