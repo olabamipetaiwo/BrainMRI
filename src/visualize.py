@@ -99,7 +99,7 @@ def visualize_subject(image: np.ndarray, gt_label: np.ndarray,
 # ---------------------------------------------------------------------------
 def parse_args():
     p = argparse.ArgumentParser(description='Visualize BraTS U-Net predictions')
-    p.add_argument('--data_dir',    default='.')
+    p.add_argument('--data_dir', default='data')
     p.add_argument('--fold',        type=int, default=1)
     p.add_argument('--output_dir',  default='results')
     p.add_argument('--vis_dir',     default='results/visualizations')

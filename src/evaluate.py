@@ -117,7 +117,7 @@ def evaluate_fold(data_dir, fold_idx, splits, device, args):
 # ---------------------------------------------------------------------------
 def parse_args():
     p = argparse.ArgumentParser(description='Evaluate 3D U-Net on BraTS folds')
-    p.add_argument('--data_dir',   default='.')
+    p.add_argument('--data_dir', default='data')
     p.add_argument('--fold',       type=int, default=1,
                    help='Fold index (1-5); 0 = all folds')
     p.add_argument('--output_dir', default='results')

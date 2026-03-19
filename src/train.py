@@ -172,7 +172,7 @@ def parse_args():
                    help='Path to Task01_BrainTumour/')
     p.add_argument('--fold',        type=int, default=1,
                    help='Fold index (1-5); use 0 to run all folds')
-    p.add_argument('--epochs',      type=int, default=200)
+    p.add_argument('--epochs',      type=int, default=10)
     p.add_argument('--batch_size',  type=int, default=1)
     p.add_argument('--lr',          type=float, default=1e-4)
     p.add_argument('--output_dir',  default='results')

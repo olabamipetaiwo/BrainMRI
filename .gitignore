@@ -34,3 +34,18 @@ Thumbs.db
 
 
 CLAUDE>md
+
+
+# Ignore PyTorch model weights
+*.pth
+*.pt
+*.ckpt
+
+# Ignore the virtual environment
+venv/
+.env
+
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
