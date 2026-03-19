@@ -1,9 +1,6 @@
 # Data (large MRI volumes — do not commit)
 data/
 
-# Results and checkpoints
-results/
-
 # Python
 __pycache__/
 *.py[cod]

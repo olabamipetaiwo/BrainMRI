@@ -1,0 +1,13 @@
+2026-03-19 16:21:32 [INFO] Loaded fold 3 checkpoint (epoch 10)
+2026-03-19 16:22:52 [INFO]   20/96 subjects done
+2026-03-19 16:24:10 [INFO]   40/96 subjects done
+2026-03-19 16:25:27 [INFO]   60/96 subjects done
+2026-03-19 16:26:45 [INFO]   80/96 subjects done
+2026-03-19 16:27:47 [INFO] 
+Fold 3 — 96 val subjects
+2026-03-19 16:27:47 [INFO] Region      Dice      HD95
+2026-03-19 16:27:47 [INFO] --------------------------
+2026-03-19 16:27:47 [INFO]     ET    0.7078      4.27
+2026-03-19 16:27:47 [INFO]     TC    0.7680      5.07
+2026-03-19 16:27:47 [INFO]     WT    0.8777      4.71
+2026-03-19 16:27:47 [INFO] Metrics saved → results/fold_3/metrics.json
