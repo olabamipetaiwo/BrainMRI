@@ -22,7 +22,7 @@ class ConvBlock(nn.Module):
 
 
 class DownBlock(nn.Module):
-    """Strided 3×3×3 conv (stride=2) → ConvBlock."""
+    """Strided 2×2×2 conv (stride=2) → ConvBlock."""
 
     def __init__(self, in_ch, out_ch):
         super().__init__()

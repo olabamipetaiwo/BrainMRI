@@ -5,7 +5,7 @@ import json
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.cuda.amp import GradScaler, autocast
+from torch.amp import GradScaler, autocast
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +29,9 @@ class SoftDiceLoss(nn.Module):
         self.smooth = smooth
 
     def forward(self, logits, targets):
-        """logits: (B,C,H,W,D)  targets: (B,H,W,D) long"""
+        """logits: (B,C,H,W,D)  targets: (B,H,W,D) or (B,1,H,W,D) long"""
+        if targets.dim() == logits.dim():   # handle (B,1,H,W,D) from MONAI-style call
+            targets = targets.squeeze(1)
         n_classes = logits.shape[1]
         probs = torch.softmax(logits, dim=1)
         # one-hot encode targets
@@ -104,7 +106,7 @@ def train_fold(data_dir, fold_idx, splits, device, args):
     class_weights = torch.tensor([0.5, 1.0, 1.0, 3.0], device=device)
     ce_loss_fn   = nn.CrossEntropyLoss(weight=class_weights)
 
-    scaler    = GradScaler()
+    scaler    = GradScaler('cuda')
     best_dice = -1.0
     ckpt_path = os.path.join(fold_dir, 'best_model.pth')
 
@@ -117,7 +119,7 @@ def train_fold(data_dir, fold_idx, splits, device, args):
             labels = labels.to(device)
 
             optimizer.zero_grad()
-            with autocast():
+            with autocast('cuda'):
                 logits = model(images)
                 dloss  = dice_loss_fn(logits, labels.unsqueeze(1))
                 celoss = ce_loss_fn(logits, labels)

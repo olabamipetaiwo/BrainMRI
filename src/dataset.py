@@ -44,7 +44,7 @@ class BraTSDataset(Dataset):
         """Random flips (all axes) and per-modality intensity jitter."""
         # Random flips along H / W / D  (image dims 1,2,3; label dims 0,1,2)
         for axis in range(3):
-            if np.random.random() > 0.5:
+            if torch.rand(1).item() > 0.5:
                 image = torch.flip(image, [axis + 1])
                 label = torch.flip(label, [axis])
 

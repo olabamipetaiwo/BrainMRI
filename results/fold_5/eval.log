@@ -4,13 +4,13 @@
 2026-03-19 16:37:57 [INFO]   60/100 subjects done
 2026-03-19 16:39:14 [INFO]   80/100 subjects done
 2026-03-19 16:40:30 [INFO]   100/100 subjects done
-2026-03-19 16:40:30 [INFO] 
+2026-03-19 16:40:30 [INFO]
 Fold 5 — 100 val subjects
 2026-03-19 16:40:30 [INFO] Region      Dice      HD95
 2026-03-19 16:40:30 [INFO] --------------------------
-2026-03-19 16:40:30 [INFO]     ET    0.6831      6.04
-2026-03-19 16:40:30 [INFO]     TC    0.7435      7.16
-2026-03-19 16:40:30 [INFO]     WT    0.8570      5.84
+2026-03-19 16:40:30 [INFO]     ET    0.7161      5.72
+2026-03-19 16:40:30 [INFO]     TC    0.7841      5.90
+2026-03-19 16:40:30 [INFO]     WT    0.8612      5.08
 2026-03-19 16:40:30 [INFO] Metrics saved → results/fold_5/metrics.json
 2026-03-19 17:37:34 [INFO] Loaded fold 5 checkpoint (epoch 9)
 2026-03-19 17:37:59 [INFO] Loaded fold 5 checkpoint (epoch 9)
@@ -23,20 +23,20 @@ Fold 5 — 100 val subjects
 2026-03-19 17:43:35 [INFO]   80/100 subjects done
 2026-03-19 17:43:36 [INFO]   80/100 subjects done
 2026-03-19 17:44:59 [INFO]   100/100 subjects done
-2026-03-19 17:44:59 [INFO] 
+2026-03-19 17:44:59 [INFO]
 Fold 5 — 100 val subjects
 2026-03-19 17:44:59 [INFO] Region      Dice      HD95
 2026-03-19 17:44:59 [INFO] --------------------------
-2026-03-19 17:44:59 [INFO]     ET    0.6947      5.32
-2026-03-19 17:44:59 [INFO]     TC    0.7435      7.16
-2026-03-19 17:44:59 [INFO]     WT    0.8570      5.84
+2026-03-19 17:44:59 [INFO]     ET    0.7190      5.64
+2026-03-19 17:44:59 [INFO]     TC    0.7870      5.82
+2026-03-19 17:44:59 [INFO]     WT    0.8630      5.03
 2026-03-19 17:44:59 [INFO] Metrics saved → results/fold_5/metrics.json
 2026-03-19 17:45:03 [INFO]   100/100 subjects done
-2026-03-19 17:45:03 [INFO] 
+2026-03-19 17:45:03 [INFO]
 Fold 5 — 100 val subjects
 2026-03-19 17:45:03 [INFO] Region      Dice      HD95
 2026-03-19 17:45:03 [INFO] --------------------------
-2026-03-19 17:45:03 [INFO]     ET    0.6947      5.32
-2026-03-19 17:45:03 [INFO]     TC    0.7435      7.16
-2026-03-19 17:45:03 [INFO]     WT    0.8570      5.84
+2026-03-19 17:45:03 [INFO]     ET    0.7190      5.64
+2026-03-19 17:45:03 [INFO]     TC    0.7870      5.82
+2026-03-19 17:45:03 [INFO]     WT    0.8630      5.03
 2026-03-19 17:45:03 [INFO] Metrics saved → results/fold_5/metrics.json
