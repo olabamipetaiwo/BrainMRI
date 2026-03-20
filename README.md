@@ -38,15 +38,13 @@ BrainTumour/
 
 Python 3.8+ and a CUDA-capable GPU are recommended (CPU training is possible but very slow).
 
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install numpy scipy nibabel monai medpy tqdm matplotlib
-```
+# install with 
+ python3 -m venv venv
+ source venv/bin/activate
 
-> If MONAI is unavailable, the code falls back to a built-in soft Dice loss automatically.
-> If medpy is unavailable, HD95 will be skipped and reported as `nan`.
+ pip install --upgrade pip
+ pip install -r requirements.txt  
 
----
 
 ## Dataset & Label Mapping
 
