@@ -78,5 +78,3 @@ Fold      ET Dice     TC Dice     WT Dice     ET HD95     TC HD95     WT HD95
 5          0.6947      0.7435      0.8570        5.32        7.16        5.84
 -----------------------------------------------------------------------------
 Avg        0.7001      0.7552      0.8689        5.24        5.98        5.12
-
-Aggregated results saved → results/cv_results.json
