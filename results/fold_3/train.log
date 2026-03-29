@@ -19,3 +19,33 @@
 2026-03-19 09:43:09 [INFO] Epoch   10/10  train_loss=0.2058  val_dice=0.7845
 2026-03-19 09:43:10 [INFO]   >> saved best model  (dice=0.7845)
 2026-03-19 09:43:10 [INFO] Fold 3 finished — best val dice: 0.7845
+2026-03-28 07:51:19 [INFO] Fold 3: 388 train  /  96 val
+2026-03-28 08:13:07 [INFO] Epoch    1/15  train_loss=0.9370  val_dice=0.5940
+2026-03-28 08:13:08 [INFO]   >> saved best model  (dice=0.5940)
+2026-03-28 08:34:56 [INFO] Epoch    2/15  train_loss=0.6953  val_dice=0.6616
+2026-03-28 08:34:57 [INFO]   >> saved best model  (dice=0.6616)
+2026-03-28 08:56:44 [INFO] Epoch    3/15  train_loss=0.5723  val_dice=0.6858
+2026-03-28 08:56:45 [INFO]   >> saved best model  (dice=0.6858)
+2026-03-28 09:18:37 [INFO] Epoch    4/15  train_loss=0.4981  val_dice=0.6993
+2026-03-28 09:18:37 [INFO]   >> saved best model  (dice=0.6993)
+2026-03-28 09:40:25 [INFO] Epoch    5/15  train_loss=0.4406  val_dice=0.7168
+2026-03-28 09:40:25 [INFO]   >> saved best model  (dice=0.7168)
+2026-03-28 10:02:09 [INFO] Epoch    6/15  train_loss=0.3908  val_dice=0.7260
+2026-03-28 10:02:10 [INFO]   >> saved best model  (dice=0.7260)
+2026-03-28 10:24:01 [INFO] Epoch    7/15  train_loss=0.3429  val_dice=0.7539
+2026-03-28 10:24:01 [INFO]   >> saved best model  (dice=0.7539)
+2026-03-28 10:45:46 [INFO] Epoch    8/15  train_loss=0.2986  val_dice=0.7512
+2026-03-28 11:07:36 [INFO] Epoch    9/15  train_loss=0.2606  val_dice=0.7578
+2026-03-28 11:07:36 [INFO]   >> saved best model  (dice=0.7578)
+2026-03-28 11:29:21 [INFO] Epoch   10/15  train_loss=0.2387  val_dice=0.7670
+2026-03-28 11:29:21 [INFO]   >> saved best model  (dice=0.7670)
+2026-03-28 11:51:09 [INFO] Epoch   11/15  train_loss=0.2224  val_dice=0.7782
+2026-03-28 11:51:09 [INFO]   >> saved best model  (dice=0.7782)
+2026-03-28 12:12:55 [INFO] Epoch   12/15  train_loss=0.2149  val_dice=0.7799
+2026-03-28 12:12:56 [INFO]   >> saved best model  (dice=0.7799)
+2026-03-28 12:34:47 [INFO] Epoch   13/15  train_loss=0.2050  val_dice=0.7831
+2026-03-28 12:34:47 [INFO]   >> saved best model  (dice=0.7831)
+2026-03-28 12:56:34 [INFO] Epoch   14/15  train_loss=0.2009  val_dice=0.7657
+2026-03-28 13:18:20 [INFO] Epoch   15/15  train_loss=0.1960  val_dice=0.7958
+2026-03-28 13:18:20 [INFO]   >> saved best model  (dice=0.7958)
+2026-03-28 13:18:20 [INFO] Fold 3 finished — best val dice: 0.7958

@@ -40,3 +40,31 @@ Fold 5 — 100 val subjects
 2026-03-19 17:45:03 [INFO]     TC    0.7870      5.82
 2026-03-19 17:45:03 [INFO]     WT    0.8630      5.03
 2026-03-19 17:45:03 [INFO] Metrics saved → results/fold_5/metrics.json
+2026-03-29 01:53:09 [INFO] Loaded fold 5 checkpoint (epoch 15)
+2026-03-29 01:54:41 [INFO]   20/100 subjects done
+2026-03-29 01:56:10 [INFO]   40/100 subjects done
+2026-03-29 01:57:40 [INFO]   60/100 subjects done
+2026-03-29 01:59:08 [INFO]   80/100 subjects done
+2026-03-29 02:00:37 [INFO]   100/100 subjects done
+2026-03-29 02:00:37 [INFO] 
+Fold 5 — 100 val subjects
+2026-03-29 02:00:37 [INFO] Region      Dice      HD95
+2026-03-29 02:00:37 [INFO] --------------------------
+2026-03-29 02:00:37 [INFO]     ET    0.7319      2.82
+2026-03-29 02:00:37 [INFO]     TC    0.7806      3.95
+2026-03-29 02:00:37 [INFO]     WT    0.8798      3.74
+2026-03-29 02:00:37 [INFO] Metrics saved → results/fold_5/metrics.json
+2026-03-29 02:49:06 [INFO] Loaded fold 5 checkpoint (epoch 15)
+2026-03-29 02:50:40 [INFO]   20/100 subjects done
+2026-03-29 02:52:09 [INFO]   40/100 subjects done
+2026-03-29 02:53:39 [INFO]   60/100 subjects done
+2026-03-29 02:55:09 [INFO]   80/100 subjects done
+2026-03-29 02:56:39 [INFO]   100/100 subjects done
+2026-03-29 02:56:39 [INFO] 
+Fold 5 — 100 val subjects
+2026-03-29 02:56:39 [INFO] Region      Dice      HD95
+2026-03-29 02:56:39 [INFO] --------------------------
+2026-03-29 02:56:39 [INFO]     ET    0.7390      2.72
+2026-03-29 02:56:39 [INFO]     TC    0.7859      4.00
+2026-03-29 02:56:39 [INFO]     WT    0.8823      3.82
+2026-03-29 02:56:39 [INFO] Metrics saved → results/fold_5/metrics.json

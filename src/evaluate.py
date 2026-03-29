@@ -85,17 +85,24 @@ def evaluate_fold(data_dir, fold_idx, splits, device, args):
 
     with torch.no_grad():
         for i, (images, labels) in enumerate(val_loader):
-            logits = model(images.to(device))
-            pred   = logits.argmax(dim=1)[0].cpu().numpy()   # (H,W,D)
-            gt     = labels[0].numpy()
+            img = images.to(device)
+
+            # Test-Time Augmentation: average softmax over original + 3 axis flips
+            probs = torch.softmax(model(img), dim=1)
+            for axis in (2, 3, 4):
+                flipped = torch.flip(img, dims=[axis])
+                probs  += torch.flip(torch.softmax(model(flipped), dim=1), dims=[axis])
+            probs /= 4.0
+
+            pred     = probs.argmax(dim=1)[0].cpu().numpy()   # (H,W,D)
+            gt       = labels[0].numpy()
 
             pred_map = map_labels(pred)
             gt_map   = map_labels(gt)
 
             for region in ('ET', 'TC', 'WT'):
                 pm = pred_map[region].astype(bool)
-                if region == 'ET':
-                    pm = remove_small_components(pm, min_size=50)
+                pm = remove_small_components(pm, min_size=50)
                 gm = gt_map[region].astype(bool)
                 bucket[region]['dice'].append(compute_dice(pm, gm))
                 bucket[region]['hd95'].append(compute_hd95(pm, gm))

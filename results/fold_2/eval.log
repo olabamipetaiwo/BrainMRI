@@ -37,3 +37,29 @@ Fold 2 — 96 val subjects
 2026-03-19 17:24:33 [INFO]     TC    0.8080      6.14
 2026-03-19 17:24:33 [INFO]     WT    0.8710      4.92
 2026-03-19 17:24:33 [INFO] Metrics saved → results/fold_2/metrics.json
+2026-03-29 01:31:32 [INFO] Loaded fold 2 checkpoint (epoch 15)
+2026-03-29 01:33:05 [INFO]   20/96 subjects done
+2026-03-29 01:34:34 [INFO]   40/96 subjects done
+2026-03-29 01:36:04 [INFO]   60/96 subjects done
+2026-03-29 01:37:33 [INFO]   80/96 subjects done
+2026-03-29 01:38:44 [INFO] 
+Fold 2 — 96 val subjects
+2026-03-29 01:38:44 [INFO] Region      Dice      HD95
+2026-03-29 01:38:44 [INFO] --------------------------
+2026-03-29 01:38:44 [INFO]     ET    0.7645      2.88
+2026-03-29 01:38:44 [INFO]     TC    0.7976      4.36
+2026-03-29 01:38:44 [INFO]     WT    0.8821      3.70
+2026-03-29 01:38:44 [INFO] Metrics saved → results/fold_2/metrics.json
+2026-03-29 02:27:17 [INFO] Loaded fold 2 checkpoint (epoch 15)
+2026-03-29 02:28:50 [INFO]   20/96 subjects done
+2026-03-29 02:30:20 [INFO]   40/96 subjects done
+2026-03-29 02:31:49 [INFO]   60/96 subjects done
+2026-03-29 02:33:18 [INFO]   80/96 subjects done
+2026-03-29 02:34:30 [INFO] 
+Fold 2 — 96 val subjects
+2026-03-29 02:34:30 [INFO] Region      Dice      HD95
+2026-03-29 02:34:30 [INFO] --------------------------
+2026-03-29 02:34:30 [INFO]     ET    0.7715      3.03
+2026-03-29 02:34:30 [INFO]     TC    0.8030      4.53
+2026-03-29 02:34:30 [INFO]     WT    0.8870      3.71
+2026-03-29 02:34:30 [INFO] Metrics saved → results/fold_2/metrics.json
