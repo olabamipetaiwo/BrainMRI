@@ -32,32 +32,13 @@
 
 % ----------------------------------------------------------------
 \begin{abstract}
-\textit{This study implements a 3D U-Net architecture for
-volumetric brain tumor segmentation using multi-modal MRI data
-from the BraTS 2016/2017 Task01\_BrainTumour dataset (484
-training subjects, Medical Segmentation Decathlon). The model
-ingests all four co-registered MRI modalities --- FLAIR, T1w,
-T1-gadolinium, and T2w --- as a four-channel input and produces
-voxel-wise class predictions. Segmentation performance is
-evaluated under 5-fold cross-validation on three clinically
-defined tumor sub-regions: Enhancing Tumor (ET), Tumor Core
-(TC), and Whole Tumor (WT), using Dice Score and the 95th-
-percentile Hausdorff Distance (HD95). The preprocessing pipeline
-applies per-modality Z-score normalization using brain-masked
-statistics, 1~mm isotropic resampling, bounding-box cropping, and
-online augmentation. A combined Dice + Weighted Cross-Entropy
-loss with class upweighting for the rare ET region mitigates the
-severe foreground/background class imbalance inherent to brain
-tumor datasets. Cross-validation results yield mean Dice scores
-of 0.727 (ET), 0.799 (TC), and 0.874 (WT), with corresponding
-HD95 values of 5.01, 5.46, and 4.47~mm. These findings
-demonstrate that a well-configured standard 3D U-Net with
-class-aware loss design provides a competitive and reproducible
-baseline for automated brain tumor delineation.}
+\textit{
+This study presents a 3D U-Net model for volumetric brain tumour segmentation using multi-modal MRI from the BraTS BrainTumour dataset (484 subjects, Medical Segmentation Decathlon). The network integrates four co-registered MRI modalities, FLAIR, T1-weighted, T1-contrast-enhanced, and T2-weighted, into a unified four-channel input and outputs voxel-level tumour labels. Model performance is assessed through 5-fold cross-validation across three clinically defined sub-regions: Enhancing Tumour (ET), Tumour Core (TC), and Whole Tumour (WT), evaluated using Dice Score and the 95th-percentile Hausdorff Distance (HD95).  The preprocessing pipeline includes per-modality Z-score normalisation using brain-masked statistics, 1\,mm isotropic resampling, bounding-box cropping, and online spatial augmentation. To address the substantial foreground--background imbalance, particularly the sparsity of ET voxels, the training objective combines Dice loss with Weighted Cross-Entropy and applies class-specific upweighting. Across cross-validation folds, the model achieves mean Dice scores of 0.727 (ET), 0.799 (TC), and 0.874 (WT), with corresponding HD95 values of 5.01, 5.46, and 4.47\,mm. The cross-validation metrics confirm that the model captures the structural characteristics of ET, TC, and WT regions with competitive accuracy, demonstrating stable performance across subjects.
+}
 
 \medskip
 The source code for this project is available at:
-\url{https://github.com/olabamipetaiwo/BrainMRI}
+\url{https://github.com/olabamipetaiwo/BrainTumorSegmentation}
 \end{abstract}
 % ----------------------------------------------------------------
 
@@ -78,22 +59,12 @@ requiring 30--60 minutes per case, and subject to substantial
 inter-rater variability, particularly for heterogeneous regions
 such as necrosis and peritumoral edema. Automated, reproducible
 segmentation methods have therefore attracted significant research
-interest. Multi-parametric MRI --- combining FLAIR, T1w,
-T1-gadolinium (T1gd), and T2w sequences --- provides
+interest. Multi-parametric MRI  combining FLAIR, T1w,
+T1-gadolinium (T1gd), and T2w sequences  provides
 complementary tissue contrasts that are necessary for
 distinguishing the three clinically defined evaluation regions:
 
-\begin{itemize}[leftmargin=*, noitemsep]
-  \item \textbf{Enhancing Tumor (ET):} Active tumor vasculature
-    visible on T1gd due to contrast-agent uptake (label~4 in
-    original BraTS; label~3 in Task01\_BrainTumour).
-  \item \textbf{Tumor Core (TC):} Solid tumor bulk comprising ET
-    and necrotic/non-enhancing tissue (labels~1 and~4 in original
-    BraTS; labels~2 and~3 in Task01).
-  \item \textbf{Whole Tumor (WT):} Full extent of abnormal tissue
-    including peritumoral edema, hyperintense on FLAIR (labels~1,
-    2, and~4 in original BraTS; labels~1, 2, and~3 in Task01).
-\end{itemize}
+Enhancing Tumor represents actively vascularized tissue visible on T1‑gd, Tumor Core includes the enhancing and non‑enhancing solid components, and Whole Tumor encompasses the full abnormal region including peritumoral edema seen on FLAIR.
 
 The BraTS challenge~\cite{bakas2018,bakas2017,menze2015} has been
 the principal benchmark for brain tumor segmentation since 2012.
@@ -188,29 +159,33 @@ WT~$=$~\{Task01 labels~1,2,3\}, equivalent to ET~$=$~\{label~4\},
 TC~$=$~\{labels~1,4\}, WT~$=$~\{labels~1,2,4\} in original BraTS
 notation.
 
-Figure~\ref{fig:visualization} shows a representative axial
-mid-slice from the Fold~1 validation set, displaying all four
-MRI modalities alongside the ground truth and predicted
-segmentation overlays generated by the code in
-\texttt{src/visualize.py}. The FLAIR modality highlights
-peritumoral edema (cyan), T1gd reveals the bright enhancing
-tumor rim (red), T2w delineates the broader infiltrated region,
-and T1w provides anatomical reference. This four-modality view
-is used for qualitative assessment throughout evaluation.
+
+
+Figure~\ref{fig:itksnap} and Figure~\ref{fig:itksnap2} provides an example of the raw multi-modal MRI data and corresponding tumour annotations 
+included in the BrainTumour dataset. Visualizing the dataset in ITK-SNAP helps illustrate the spatial 
+relationships between modalities and tumour sub-regions, and highlights the heterogeneity in appearance across 
+different anatomical planes. This inspection step ensures familiarity with the underlying data characteristics prior to designing the segmentation model.
+
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\columnwidth]{fold1_sub000_slice064.png}
-  \caption{Axial mid-slice visualization for a representative
-    Fold~1 validation subject (axial slice~64). \textbf{Left to
-    right:} FLAIR, T1w, Ground Truth overlay, Prediction overlay.
-    Colors follow the Task01 label convention:
-    \textcolor{cyan}{cyan}~=~edema (label~1),
-    \textcolor{orange}{orange}~=~non-enhancing tumor (label~2),
-    \textcolor{red}{red}~=~enhancing tumor (label~3,
-    corresponding to GD-enhancing label~4 in original BraTS).}
-  \label{fig:visualization}
+  \includegraphics[width=0.8\linewidth]{sample3.png}
+  \caption{Visualization of a representative subject from the BrainTumour dataset using ITK-SNAP. 
+  The axial, sagittal, and coronal views show the multi-modal MRI alongside the expert-annotated segmentation mask. 
+  Distinct tumour sub-regions are highlighted: edema (cyan), non-enhancing/necrotic core (orange), and 
+  GD-enhancing tumour (red).}
+  \label{fig:itksnap}
 \end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{sample2.png}
+  \caption{Visualization 2 using ITK-SNAP.}
+  \label{fig:itksnap2}
+\end{figure}
+
+
+
 
 \subsection{Preprocessing Pipeline}
 
@@ -297,18 +272,10 @@ isolated spurious activations.
 
 \begin{figure}[h]
   \centering
-  \fbox{\begin{minipage}{\columnwidth}\centering\vspace{2cm}
-    {\small Training Loss (Dice + CE) \quad / \quad
-     Validation Mean Dice (ET/TC/WT)} \\[0.3em]
-    {\footnotesize Fold 1 --- 10 training epochs,
-     Adam lr=$10^{-4}$}
-  \vspace{2cm}\end{minipage}}
-  \caption{Training loss and mean validation Dice curves for
-    Fold~1 across 10 epochs. The combined Dice+CE loss
-    (training) decreases steadily. Mean validation Dice over
-    ET/TC/WT improves correspondingly, confirming stable
-    convergence without overfitting within the scheduled
-    duration.}
+  \includegraphics[width=0.8\linewidth]{fold1_training_curves.png}
+  \caption{Training curves for Fold~1 over 10 epochs. The combined Dice+Cross-Entropy training loss decreases 
+    monotonically, while the mean validation Dice for ET/TC/WT increases steadily from approximately 0.45 to 0.8. 
+    The parallel trends indicate stable optimization without signs of overfitting within the training window.}
   \label{fig:traincurves}
 \end{figure}
 
@@ -378,60 +345,52 @@ examples for two representative validation subjects: one high-
 grade case with a well-defined enhancing rim and one case where
 ET is diffuse and irregular.
 
+
+
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\columnwidth]{fold1_sub000_slice064.png}\\[4pt]
-  \includegraphics[width=\columnwidth]{fold1_sub001_slice064.png}
-  \caption{Qualitative segmentation results for two Fold~1
-    validation subjects (axial slice~64). Each row shows (left
-    to right): FLAIR, T1w, Ground Truth, Prediction.
-    \textbf{Top (Subject~A):} high-grade case with a compact
-    enhancing rim; the model closely recovers the ET and WT
-    extents. \textbf{Bottom (Subject~B):} case with diffuse ET
-    and irregular edema boundary; the model underestimates the
-    WT extent, consistent with the lower mean ET Dice (0.727).}
+   \includegraphics[width=1\linewidth]{fold5sub4.png}
+  \\[4pt]
+   \includegraphics[width=1\linewidth]{fold3sub2.png}
+
+  \caption{Qualitative segmentation results for two validation subjects (axial slice~64). 
+Each row shows, from left to right: FLAIR, T1w, Ground Truth, and the model's prediction. 
+\textbf{Top:} Example from Fold~5 (subject~004), where the model recovers the major tumour 
+sub-regions with good spatial agreement, though some boundary differences are visible in the 
+edema region. \textbf{Bottom:} Example from Fold~3 (subject~002), illustrating a case with 
+smaller enhancing and non-enhancing components; the model captures the overall tumour extent 
+but slightly underestimates the edema region.}
+
+
+
   \label{fig:qualitative}
 \end{figure}
+
+
 
 \section{Discussion}
 
 \subsection{Normalization Fix Between Evaluation Runs}
 
 The initial evaluation pass produced notably lower metrics across
-all folds and all three tumor regions. Inspection of the
-evaluation script revealed that \texttt{evaluate.py} was
-computing z-score normalization statistics using
-\texttt{np.mean(volume)} and \texttt{np.std(volume)} over the
-entire 3D array, including the large background region of
-near-zero voxels. During training, \texttt{dataset.py} computed
-these statistics with a brain mask: only voxels where
-\texttt{volume > 0} contributed to $\mu$ and $\sigma$. The
-discrepancy meant that inference inputs had a systematically
-lower mean and compressed variance compared to training inputs,
-effectively shifting each modality channel away from the
-distribution the model had learned to process.
+all folds and all three tumor regions.
 
-The fix was a one-line correction in the evaluation
-preprocessing loop:
+During the first evaluation pass, the segmentation metrics were noticeably lower than expected across all folds. 
+Further inspection revealed a mismatch between the normalization strategy used during training and the one applied 
+during evaluation. Training employed per-modality Z-score normalization computed over brain voxels only, whereas 
+the evaluation pipeline initially computed statistics over the entire volume, including background. This introduced 
+a distribution shift that suppressed model confidence. After correcting the evaluation preprocessing to match the 
+training-time normalization procedure, all five fold checkpoints were re-evaluated, resulting in consistent 
+improvements across ET, TC, and WT without any retraining.
 
-\begin{verbatim}
-# Before (incorrect): uses all voxels
-mu  = vol.mean()
-std = vol.std()
-
-# After (correct): uses brain-masked voxels only
-mask = vol > 0
-mu  = vol[mask].mean()
-std = vol[mask].std()
-\end{verbatim}
-
-After applying this fix, all five fold checkpoints were
-re-evaluated without any retraining. Table~\ref{tab:results}
+Table~\ref{tab:results}
 reports the corrected results. The improvement was consistent
 across all folds and regions (ET: $+0.002$--$+0.003$ Dice, TC
 and WT: $+0.002$--$+0.004$ Dice), confirming that the gains
 stem entirely from correcting the input distribution rather than
 any change to the model weights.
+
+
 
 \subsection{Performance and Convergence Analysis}
 
@@ -526,9 +485,9 @@ The combined Dice and class-weighted Cross-Entropy loss was
 critical for recovering ET segmentation performance, analogous to
 the role of class-balanced sampling in the previous assignment's
 transfer learning model for pneumonia detection. The
-preprocessing pipeline --- modality-specific Z-score
+preprocessing pipeline,modality-specific Z-score
 normalization, 1~mm isotropic resampling, bounding-box cropping,
-and online augmentation --- produced well-conditioned inputs that
+and online augmentation produced well-conditioned inputs that
 supported stable convergence across all five folds.
 
 Final cross-validation averages of 0.727 (ET), 0.799 (TC), and
