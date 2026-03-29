@@ -31,9 +31,9 @@ def remove_small_components(pred_bin: np.ndarray, min_size: int = 50) -> np.ndar
     return pred_bin
 
 
-# ---------------------------------------------------------------------------
+# 
 # Metric helpers
-# ---------------------------------------------------------------------------
+# 
 def compute_dice(pred_bin: np.ndarray, gt_bin: np.ndarray) -> float:
     inter = (pred_bin & gt_bin).sum()
     denom = pred_bin.sum() + gt_bin.sum()
@@ -55,9 +55,43 @@ def compute_hd95(pred_bin: np.ndarray, gt_bin: np.ndarray,
         return float('nan')
 
 
-# ---------------------------------------------------------------------------
+def compute_sensitivity(pred_bin: np.ndarray, gt_bin: np.ndarray) -> float:
+    """TP / (TP + FN). Returns 1.0 if GT is empty (nothing to detect)."""
+    tp = (pred_bin & gt_bin).sum()
+    fn = (~pred_bin & gt_bin).sum()
+    denom = tp + fn
+    if denom == 0:
+        return 1.0
+    return float(tp / denom)
+
+
+def compute_specificity(pred_bin: np.ndarray, gt_bin: np.ndarray) -> float:
+    """TN / (TN + FP). Returns 1.0 if the entire volume is GT-positive."""
+    tn = (~pred_bin & ~gt_bin).sum()
+    fp = (pred_bin & ~gt_bin).sum()
+    denom = tn + fp
+    if denom == 0:
+        return 1.0
+    return float(tn / denom)
+
+
+def compute_asd(pred_bin: np.ndarray, gt_bin: np.ndarray,
+                spacing=(1.0, 1.0, 1.0)) -> float:
+    """Average Symmetric Surface Distance (mm)."""
+    if not _HAS_MEDPY:
+        return float('nan')
+    if pred_bin.sum() == 0 or gt_bin.sum() == 0:
+        return float('nan')
+    try:
+        return float(medpy_binary.asd(
+            pred_bin, gt_bin, voxelspacing=spacing, connectivity=1))
+    except Exception:
+        return float('nan')
+
+
+# 
 # Per-fold evaluation
-# ---------------------------------------------------------------------------
+# 
 def evaluate_fold(data_dir, fold_idx, splits, device, args):
     fold_dir  = os.path.join(args.output_dir, f'fold_{fold_idx}')
     ckpt_path = os.path.join(fold_dir, 'best_model.pth')
@@ -81,7 +115,8 @@ def evaluate_fold(data_dir, fold_idx, splits, device, args):
     model.eval()
     logger.info(f'Loaded fold {fold_idx} checkpoint (epoch {ckpt["epoch"]})')
 
-    bucket = {r: {'dice': [], 'hd95': []} for r in ('ET', 'TC', 'WT')}
+    bucket = {r: {'dice': [], 'hd95': [], 'sensitivity': [], 'specificity': [], 'asd': []}
+              for r in ('ET', 'TC', 'WT')}
 
     with torch.no_grad():
         for i, (images, labels) in enumerate(val_loader):
@@ -106,24 +141,36 @@ def evaluate_fold(data_dir, fold_idx, splits, device, args):
                 gm = gt_map[region].astype(bool)
                 bucket[region]['dice'].append(compute_dice(pm, gm))
                 bucket[region]['hd95'].append(compute_hd95(pm, gm))
+                bucket[region]['sensitivity'].append(compute_sensitivity(pm, gm))
+                bucket[region]['specificity'].append(compute_specificity(pm, gm))
+                bucket[region]['asd'].append(compute_asd(pm, gm))
 
             if (i + 1) % 20 == 0:
                 logger.info(f'  {i+1}/{len(val_loader)} subjects done')
 
     # Summary
     summary = {}
-    header = f'{"Region":>6}  {"Dice":>8}  {"HD95":>8}'
+    header = f'{"Region":>6}  {"Dice":>8}  {"HD95":>8}  {"Sens":>8}  {"Spec":>8}  {"ASD":>8}'
     logger.info(f'\nFold {fold_idx} — {len(val_subjects)} val subjects')
     logger.info(header)
     logger.info('-' * len(header))
 
     for region in ('ET', 'TC', 'WT'):
-        dices = [v for v in bucket[region]['dice'] if not np.isnan(v)]
-        hd95s = [v for v in bucket[region]['hd95'] if not np.isnan(v)]
-        mean_dice = float(np.mean(dices)) if dices else float('nan')
-        mean_hd95 = float(np.mean(hd95s)) if hd95s else float('nan')
-        summary[region] = {'dice': mean_dice, 'hd95': mean_hd95}
-        logger.info(f'{region:>6}  {mean_dice:>8.4f}  {mean_hd95:>8.2f}')
+        def _mean(key):
+            vals = [v for v in bucket[region][key] if not np.isnan(v)]
+            return float(np.mean(vals)) if vals else float('nan')
+
+        mean_dice = _mean('dice')
+        mean_hd95 = _mean('hd95')
+        mean_sens = _mean('sensitivity')
+        mean_spec = _mean('specificity')
+        mean_asd  = _mean('asd')
+        summary[region] = {
+            'dice': mean_dice, 'hd95': mean_hd95,
+            'sensitivity': mean_sens, 'specificity': mean_spec, 'asd': mean_asd,
+        }
+        logger.info(f'{region:>6}  {mean_dice:>8.4f}  {mean_hd95:>8.2f}'
+                    f'  {mean_sens:>8.4f}  {mean_spec:>8.4f}  {mean_asd:>8.2f}')
 
     out_path = os.path.join(fold_dir, 'metrics.json')
     with open(out_path, 'w') as f:
@@ -133,9 +180,9 @@ def evaluate_fold(data_dir, fold_idx, splits, device, args):
     return summary
 
 
-# ---------------------------------------------------------------------------
+# 
 # Entry point
-# ---------------------------------------------------------------------------
+# 
 def parse_args():
     p = argparse.ArgumentParser(description='Evaluate 3D U-Net on BraTS folds')
     p.add_argument('--data_dir', default='data')
@@ -147,32 +194,33 @@ def parse_args():
 
 def print_cv_table(all_results):
     cols = ('ET', 'TC', 'WT')
-    header = (f'{"Fold":<5}' +
-              ''.join(f'  {c+" Dice":>10}' for c in cols) +
-              ''.join(f'  {c+" HD95":>10}' for c in cols))
+    metrics = ('dice', 'hd95', 'sensitivity', 'specificity', 'asd')
+    fmt     = {'dice': '.4f', 'hd95': '.2f', 'sensitivity': '.4f', 'specificity': '.4f', 'asd': '.2f'}
+    labels  = {'dice': 'Dice', 'hd95': 'HD95', 'sensitivity': 'Sens', 'specificity': 'Spec', 'asd': 'ASD'}
+
+    header = f'{"Fold":<5}'
+    for m in metrics:
+        for c in cols:
+            header += f'  {c+" "+labels[m]:>12}'
     print('\n=== Cross-Validation Summary ===')
     print(header)
     print('-' * len(header))
 
-    agg = {r: {'dice': [], 'hd95': []} for r in cols}
+    agg = {r: {m: [] for m in metrics} for r in cols}
     for fold, res in sorted(all_results.items()):
         row = f'{fold:<5}'
-        for r in cols:
-            row += f'  {res[r]["dice"]:>10.4f}'
-            agg[r]['dice'].append(res[r]['dice'])
-        for r in cols:
-            row += f'  {res[r]["hd95"]:>10.2f}'
-            agg[r]['hd95'].append(res[r]['hd95'])
+        for m in metrics:
+            for r in cols:
+                row += f'  {res[r][m]:>12{fmt[m]}}'
+                agg[r][m].append(res[r][m])
         print(row)
 
     print('-' * len(header))
     row = f'{"Avg":<5}'
-    for r in cols:
-        vals = [v for v in agg[r]['dice'] if not np.isnan(v)]
-        row += f'  {np.mean(vals):>10.4f}'
-    for r in cols:
-        vals = [v for v in agg[r]['hd95'] if not np.isnan(v)]
-        row += f'  {np.mean(vals):>10.2f}'
+    for m in metrics:
+        for r in cols:
+            vals = [v for v in agg[r][m] if not np.isnan(v)]
+            row += f'  {np.mean(vals):>12{fmt[m]}}'
     print(row)
 
 

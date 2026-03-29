@@ -64,3 +64,16 @@ Fold 1 — 96 val subjects
 2026-03-29 02:27:16 [INFO]     TC    0.7768      4.15
 2026-03-29 02:27:16 [INFO]     WT    0.8871      3.82
 2026-03-29 02:27:16 [INFO] Metrics saved → results/fold_1/metrics.json
+2026-03-29 05:35:37 [INFO] Loaded fold 1 checkpoint (epoch 14)
+2026-03-29 05:37:11 [INFO]   20/96 subjects done
+2026-03-29 05:38:43 [INFO]   40/96 subjects done
+2026-03-29 05:40:13 [INFO]   60/96 subjects done
+2026-03-29 05:41:44 [INFO]   80/96 subjects done
+2026-03-29 05:42:57 [INFO] 
+Fold 1 — 96 val subjects
+2026-03-29 05:42:57 [INFO] Region      Dice      HD95      Sens      Spec       ASD
+2026-03-29 05:42:57 [INFO] --------------------------------------------------------
+2026-03-29 05:42:57 [INFO]     ET    0.7287      3.07    0.8031    0.9996      0.75
+2026-03-29 05:42:57 [INFO]     TC    0.7768      4.15    0.8042    0.9996      1.08
+2026-03-29 05:42:57 [INFO]     WT    0.8871      3.82    0.9183    0.9988      0.82
+2026-03-29 05:42:57 [INFO] Metrics saved → results/fold_1/metrics.json

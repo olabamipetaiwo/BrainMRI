@@ -20,9 +20,9 @@ except ImportError:
     _monai_available = False
 
 
-# ---------------------------------------------------------------------------
+# 
 # Simple pure-PyTorch soft Dice loss (fallback if MONAI unavailable)
-# ---------------------------------------------------------------------------
+# 
 class SoftDiceLoss(nn.Module):
     def __init__(self, smooth=1e-5):
         super().__init__()
@@ -49,9 +49,9 @@ def build_loss_fn():
     return SoftDiceLoss()
 
 
-# ---------------------------------------------------------------------------
+# 
 # Validation Dice (ET/TC/WT regions)
-# ---------------------------------------------------------------------------
+# 
 def region_dice(pred_labels_np, gt_labels_np):
     """Return mean Dice over ET/TC/WT for a single subject."""
     pm = map_labels(pred_labels_np)
@@ -66,9 +66,9 @@ def region_dice(pred_labels_np, gt_labels_np):
     return float(np.mean(scores))
 
 
-# ---------------------------------------------------------------------------
+# 
 # Training
-# ---------------------------------------------------------------------------
+# 
 def train_fold(data_dir, fold_idx, splits, device, args):
     fold_dir = os.path.join(args.output_dir, f'fold_{fold_idx}')
     os.makedirs(fold_dir, exist_ok=True)
@@ -171,9 +171,9 @@ def train_fold(data_dir, fold_idx, splits, device, args):
     return best_dice
 
 
-# ---------------------------------------------------------------------------
+# 
 # Entry point
-# ---------------------------------------------------------------------------
+# 
 def parse_args():
     p = argparse.ArgumentParser(description='Train 3D U-Net on BraTS data')
     p.add_argument('--data_dir',    default='.',

@@ -16,9 +16,9 @@ from dataset import BraTSDataset, load_dataset_splits
 from utils import map_labels
 
 
-# ---------------------------------------------------------------------------
+# 
 # Color maps
-# ---------------------------------------------------------------------------
+# 
 #  Label → RGB (uint8)
 LABEL_COLORS = np.array([
     [0,   0,   0  ],   # 0: background (black)
@@ -42,9 +42,9 @@ def label_to_rgb(label_2d: np.ndarray) -> np.ndarray:
     return rgb
 
 
-# ---------------------------------------------------------------------------
+# 
 # Per-subject visualisation
-# ---------------------------------------------------------------------------
+# 
 def visualize_subject(image: np.ndarray, gt_label: np.ndarray,
                       pred_label: np.ndarray, subject_id: str,
                       save_dir: str, slice_idx: int = None):
@@ -94,9 +94,9 @@ def visualize_subject(image: np.ndarray, gt_label: np.ndarray,
     print(f'Saved: {save_path}')
 
 
-# ---------------------------------------------------------------------------
+# 
 # Entry point
-# ---------------------------------------------------------------------------
+# 
 def parse_args():
     p = argparse.ArgumentParser(description='Visualize BraTS U-Net predictions')
     p.add_argument('--data_dir', default='data')

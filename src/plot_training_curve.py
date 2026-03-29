@@ -1,4 +1,4 @@
-"""Generate training loss + validation Dice curve for Fold 1 from train.log."""
+"""Generate training curve comparison: baseline (10 ep) vs improved (15 ep) for Fold 1."""
 
 import re
 import matplotlib
@@ -9,13 +9,11 @@ import os
 LOG_PATH = 'results/fold_1/train.log'
 OUT_PATH = 'results/visualizations/fold1_training_curves.png'
 
-# Parse the last complete run from the log
-epochs, train_losses, val_dices = [], [], []
 pattern = re.compile(
     r'Epoch\s+(\d+)/\d+\s+train_loss=([\d.]+)\s+val_dice=([\d.]+)'
 )
 
-# Collect all runs then keep only the last one
+# Collect all runs from the log
 all_runs = []
 current_run = []
 with open(LOG_PATH) as f:
@@ -30,38 +28,52 @@ with open(LOG_PATH) as f:
 if current_run:
     all_runs.append(current_run)
 
-last_run = all_runs[-1]
-epochs      = [r[0] for r in last_run]
-train_losses = [r[1] for r in last_run]
-val_dices    = [r[2] for r in last_run]
+# Pick baseline (10 ep) and improved (15 ep) runs
+baseline = [r for r in all_runs if len(r) == 10][-1]
+improved = [r for r in all_runs if len(r) == 15][-1]
+
+def unzip(run):
+    epochs      = [r[0] for r in run]
+    train_losses = [r[1] for r in run]
+    val_dices    = [r[2] for r in run]
+    return epochs, train_losses, val_dices
+
+ep_b, loss_b, dice_b = unzip(baseline)
+ep_i, loss_i, dice_i = unzip(improved)
 
 # Plot
-fig, ax1 = plt.subplots(figsize=(6, 4))
+fig, (ax_loss, ax_dice) = plt.subplots(1, 2, figsize=(11, 4))
 
-color_loss = '#d62728'
-color_dice = '#1f77b4'
+# --- Loss ---
+ax_loss.plot(ep_b, loss_b, color='#d62728', marker='o', linewidth=2,
+             markersize=5, linestyle='--', label='Baseline (10 ep)')
+ax_loss.plot(ep_i, loss_i, color='#8c0a0a', marker='o', linewidth=2,
+             markersize=5, label='Improved (15 ep)')
+ax_loss.set_xlabel('Epoch', fontsize=11)
+ax_loss.set_ylabel('Training Loss (Dice + CE)', fontsize=11)
+ax_loss.set_title('Training Loss', fontsize=12)
+ax_loss.legend(fontsize=10)
+ax_loss.set_xticks(ep_i)
+ax_loss.grid(True, alpha=0.3)
 
-ax1.set_xlabel('Epoch', fontsize=11)
-ax1.set_ylabel('Training Loss (Dice + CE)', color=color_loss, fontsize=11)
-ax1.plot(epochs, train_losses, color=color_loss, marker='o', linewidth=2,
-         markersize=5, label='Train Loss')
-ax1.tick_params(axis='y', labelcolor=color_loss)
-ax1.set_ylim(0, max(train_losses) * 1.15)
+# --- Val Dice ---
+ax_dice.plot(ep_b, dice_b, color='#1f77b4', marker='s', linewidth=2,
+             markersize=5, linestyle='--', label='Baseline (10 ep)')
+ax_dice.plot(ep_i, dice_i, color='#0a4a8c', marker='s', linewidth=2,
+             markersize=5, label='Improved (15 ep)')
+ax_dice.axhline(max(dice_b), color='#1f77b4', linewidth=1, linestyle=':',
+                alpha=0.7, label=f'Baseline best: {max(dice_b):.4f}')
+ax_dice.axhline(max(dice_i), color='#0a4a8c', linewidth=1, linestyle=':',
+                alpha=0.7, label=f'Improved best: {max(dice_i):.4f}')
+ax_dice.set_xlabel('Epoch', fontsize=11)
+ax_dice.set_ylabel('Mean Validation Dice (ET/TC/WT)', fontsize=11)
+ax_dice.set_title('Validation Dice', fontsize=12)
+ax_dice.set_ylim(0.4, 1.0)
+ax_dice.set_xticks(ep_i)
+ax_dice.legend(fontsize=9)
+ax_dice.grid(True, alpha=0.3)
 
-ax2 = ax1.twinx()
-ax2.set_ylabel('Mean Validation Dice (ET/TC/WT)', color=color_dice, fontsize=11)
-ax2.plot(epochs, val_dices, color=color_dice, marker='s', linewidth=2,
-         linestyle='--', markersize=5, label='Val Dice')
-ax2.tick_params(axis='y', labelcolor=color_dice)
-ax2.set_ylim(0, 1.0)
-
-ax1.set_xticks(epochs)
-ax1.set_title('Fold 1 — Training Curves (10 epochs)', fontsize=12)
-
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-ax1.legend(lines1 + lines2, labels1 + labels2, loc='center right', fontsize=10)
-
+fig.suptitle('Fold 1 — Baseline vs Improved Training Curves', fontsize=13, fontweight='bold')
 fig.tight_layout()
 os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
 fig.savefig(OUT_PATH, dpi=150, bbox_inches='tight')
