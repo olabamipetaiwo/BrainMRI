@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# =============================================================================
+# ===
 # Brain Tumor Segmentation — 3D U-Net
 # CAP 5516 – Medical Image Computing (Spring 2026)
 #
@@ -7,7 +7,7 @@
 #   bash run_experiments.sh              # run all folds (default)
 #   bash run_experiments.sh --fold 1     # run a single fold only
 #   bash run_experiments.sh --epochs 400 # override epochs
-# =============================================================================
+# ===
 
 set -euo pipefail
 
@@ -62,7 +62,7 @@ DEVICE=$(python -c "import torch; print('cuda' if torch.cuda.is_available() else
 log "Device: $DEVICE"
 log "Folds to run: ${FOLDS[*]}"
 log "Epochs: $EPOCHS | Batch: $BATCH_SIZE | LR: $LR"
-echo "============================================================"
+echo "========================="
 
 # ── Step 1: Train ────
 for FOLD_ID in "${FOLDS[@]}"; do
@@ -98,7 +98,7 @@ for FOLD_ID in "${FOLDS[@]}"; do
     --n_subjects "$N_VIS"
 done
 
-echo "============================================================"
+echo "========================="
 log "All done."
 log "  Checkpoints : $OUTPUT_DIR/fold_N/best_model.pth"
 log "  Metrics     : $OUTPUT_DIR/fold_N/metrics.json"
