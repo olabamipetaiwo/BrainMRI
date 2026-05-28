@@ -4,7 +4,6 @@
 
 3D U-Net trained on the BraTS 2016/2017 dataset (484 subjects, 4 MRI modalities) for multi-class brain tumor segmentation, evaluated with 5-fold cross-validation.
 
----
 
 ## Project Structure
 
@@ -30,7 +29,7 @@ BrainTumour/
 └── README.md
 ```
 
----
+
 
 ## Setup
 
@@ -63,7 +62,6 @@ Raw labels are remapped to three evaluation regions before computing metrics:
 | TC — Tumor Core | `label == 2` or `label == 3` |
 | WT — Whole Tumor | `label == 1` or `label == 2` or `label == 3` |
 
----
 
 ## Preprocessing (applied per subject at load time)
 
@@ -74,8 +72,6 @@ Raw labels are remapped to three evaluation regions before computing metrics:
 5. Resize/pad to fixed spatial size `128 × 128 × 128`
 6. *(Training only)* Random flips on all axes + per-modality intensity jitter
 
----
-
 ## Model Architecture
 
 - **Input:** `(B, 4, 128, 128, 128)` — batch of 4-modality volumes
@@ -85,7 +81,6 @@ Raw labels are remapped to three evaluation regions before computing metrics:
 - Decoder: transposed-conv upsampling + skip connections from encoder
 - Loss: `0.5 × DiceLoss + 0.5 × CrossEntropyLoss`
 
----
 
 ## Running the Experiments
 
@@ -117,7 +112,7 @@ bash run_experiments.sh --epochs 400 --batch_size 2
 
 The script runs three stages in order: **train → evaluate → visualize**, printing timestamps at each step. Outputs land in `results/`.
 
----
+
 
 ### Manual commands (run steps individually)
 
@@ -187,7 +182,7 @@ python src/visualize.py --data_dir data --fold 1 --n_subjects 5
 
 Each PNG shows 4 panels: **FLAIR \| T1w \| Ground Truth \| Prediction**.
 
----
+
 
 ## Expected Results
 
@@ -202,7 +197,7 @@ The table below should be populated after running all 5 folds:
 | 5 | | | | | | |
 | **Avg** | | | | | | |
 
----
+
 
 ## Hyperparameters Summary
 
@@ -217,7 +212,7 @@ The table below should be populated after running all 5 folds:
 | Base Channels | 32 |
 | Loss | 0.5 × Dice + 0.5 × CE |
 
----
+
 
 ## References
 
